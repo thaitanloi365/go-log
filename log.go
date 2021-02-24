@@ -228,22 +228,42 @@ func (l *Logger) ErrorJSON(values ...interface{}) {
 
 // DebugWithRequestInfo debug with request info
 func (l *Logger) DebugWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
 }
 
 // ErrorWithRequestInfo debug with request info
 func (l *Logger) ErrorWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
 }
 
 // InfoWithRequestInfo debug with request info
 func (l *Logger) InfoWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
 }
 
 // WarnWithRequestInfo debug with request info
 func (l *Logger) WarnWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
+	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
+}
+
+// DebugJSONWithRequestInfo debug with request info
+func (l *Logger) DebugJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
+	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+}
+
+// ErrorJSONWithRequestInfo debug with request info
+func (l *Logger) ErrorJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
+	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+}
+
+// InfoJSONWithRequestInfo debug with request info
+func (l *Logger) InfoJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
 	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
+}
+
+// WarnJSONWithRequestInfo debug with request info
+func (l *Logger) WarnJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
+	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
 }
 
 func (l *Logger) run() {
