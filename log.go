@@ -298,24 +298,29 @@ func (l *Logger) run() {
 					separator = "\n"
 				}
 
+				var fullFormatColor = formatColor
+				var fullFormat = format
+
+				if data.requestInfo != nil {
+					fullFormatColor = formatColor + "\n" + data.formatRequestInfo()
+					fullFormat = fullFormat + " " + data.formatRequestInfo()
+					fmt.Println("fullFormat", fullFormat)
+				}
+
 				if extraPrettyFormat == "" {
 					for i := 0; i < len(data.values); i++ {
 						extraPrettyFormat = "%v" + separator + extraPrettyFormat
 					}
 				}
+
 				if extraFormat == "" {
 					for i := 0; i < len(data.values); i++ {
 						extraFormat = "%v" + " " + extraFormat
 					}
 				}
 
-				var fullFormatColor = formatColor + extraPrettyFormat
-				var fullFormat = format + extraFormat
-
-				if data.requestInfo != nil {
-					fullFormatColor = data.formatRequestInfo() + "\n" + fullFormatColor
-					fullFormat = data.formatRequestInfo() + " " + fullFormat
-				}
+				fullFormatColor = fullFormatColor + extraPrettyFormat
+				fullFormat = fullFormat + extraFormat
 
 				switch data.valueType {
 				case valueTypeCustom:
