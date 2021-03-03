@@ -302,9 +302,8 @@ func (l *Logger) run() {
 				var fullFormat = format
 
 				if data.requestInfo != nil {
-					fullFormatColor = formatColor + "\n" + data.formatRequestInfo()
-					fullFormat = fullFormat + " " + data.formatRequestInfo()
-					fmt.Println("fullFormat", fullFormat)
+					fullFormatColor = formatColor + data.formatRequestInfo() + "\n"
+					fullFormat = fullFormat + data.formatRequestInfo() + " "
 				}
 
 				if extraPrettyFormat == "" {

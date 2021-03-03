@@ -22,6 +22,15 @@ func TestRotateLogger(t *testing.T) {
 		Notifier:     NewSlackNotifier("", ""),
 	})
 
+	var errData = map[string]interface{}{
+		"error_code":    500,
+		"error_message": "internal server error",
+	}
+
+	var payload = map[string]interface{}{
+		"user_id":   1,
+		"user_name": "Loi",
+	}
 	for i := 0; i < 10; i++ {
 		logger.Debug("Test Debug %s %d", "1231231", i)
 		logger.Infof("Test Infof %s %d", "1231231", i)
@@ -33,6 +42,22 @@ func TestRotateLogger(t *testing.T) {
 			UserID:     "UserID",
 			RefErrorID: "RefErrorID",
 		}, "1231231", i)
+		logger.ErrorWithRequestInfo(&RequestInfo{
+			ReqID:      "reqID",
+			Status:     200,
+			Method:     "GET",
+			URI:        "https://test.com",
+			UserID:     "UserID",
+			RefErrorID: "RefErrorID",
+		}, payload, errData)
+		logger.ErrorJSONWithRequestInfo(&RequestInfo{
+			ReqID:      "reqID",
+			Status:     200,
+			Method:     "GET",
+			URI:        "https://test.com",
+			UserID:     "UserID",
+			RefErrorID: "RefErrorID",
+		}, payload, errData)
 		time.Sleep(time.Second)
 	}
 
