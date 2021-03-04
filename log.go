@@ -324,51 +324,60 @@ func (l *Logger) run() {
 				switch data.valueType {
 				case valueTypeCustom:
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, data.values...)...)
+
 					if l.isIgnoreWriteFile(data.logLevel) == false {
-						l.writer.Printf(fullFormat, append([]interface{}{data.time, data.caller}, data.values...)...)
-
-						if l.notifier != nil {
-							var titleFormat = format
-							if data.requestInfo != nil {
-								titleFormat = data.formatRequestInfo() + "\n" + titleFormat
-							}
-
-							l.notifier.Send(fmt.Sprintf(titleFormat, data.time), fmt.Sprintf(data.format, data.values...))
-						}
+						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, data.values...)...)
 					}
 
+					if l.notifier != nil {
+						var titleFormat = format
+						if data.requestInfo != nil {
+							titleFormat = data.formatRequestInfo() + "\n" + titleFormat
+						}
+
+						l.notifier.Send(fmt.Sprintf(titleFormat, data.time), fmt.Sprintf(data.format, data.values...))
+					}
 				case valueTypeJSON:
 					var prettyValues = []interface{}{}
 					var values = []interface{}{}
 					for _, value := range data.values {
-						values = append(values, ToJSONString(value))
-						prettyValues = append(prettyValues, ToPrettyJSONString(value))
+						switch v := value.(type) {
+						default:
+							values = append(values, ToJSONString(value))
+							prettyValues = append(prettyValues, ToPrettyJSONString(value))
+						case uint64, string, int, int64, int32, bool, float32, float64:
+							values = append(values, v)
+							prettyValues = append(prettyValues, v)
+						}
+
 					}
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, prettyValues...)...)
+
 					if l.isIgnoreWriteFile(data.logLevel) == false {
-
 						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, values...)...)
+					}
 
-						if l.notifier != nil {
-							var titleFormat = format
-							if data.requestInfo != nil {
-								titleFormat = data.formatRequestInfo() + "\n" + titleFormat
-							}
-
-							l.notifier.Send(fmt.Sprintf(titleFormat, data.time, data.caller), fmt.Sprintf(extraFormat, prettyValues...))
+					if l.notifier != nil {
+						var titleFormat = format
+						if data.requestInfo != nil {
+							titleFormat = data.formatRequestInfo() + "\n" + titleFormat
 						}
+
+						l.notifier.Send(fmt.Sprintf(titleFormat, data.time, data.caller), fmt.Sprintf(extraFormat, prettyValues...))
 					}
 				default:
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, data.values...)...)
+
 					if l.isIgnoreWriteFile(data.logLevel) == false {
 						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, data.values...)...)
-						if l.notifier != nil {
-							var titleFormat = format
-							if data.requestInfo != nil {
-								titleFormat = data.formatRequestInfo() + "\n" + titleFormat
-							}
-							l.notifier.Send(fmt.Sprintf(titleFormat, data.time, data.caller), fmt.Sprintf(extraFormat, data.values...))
+					}
+
+					if l.notifier != nil {
+						var titleFormat = format
+						if data.requestInfo != nil {
+							titleFormat = data.formatRequestInfo() + "\n" + titleFormat
 						}
+						l.notifier.Send(fmt.Sprintf(titleFormat, data.time, data.caller), fmt.Sprintf(extraFormat, data.values...))
 					}
 
 				}

@@ -32,8 +32,14 @@ func TestRotateLogger(t *testing.T) {
 		"user_name": "Loi",
 	}
 	for i := 0; i < 10; i++ {
-		logger.Debug("Test Debug %s %d", "1231231", i)
+		logger.Debug("Test Debug", i)
+
+		logger.Debugf("Test Debugf %d", i)
+
+		logger.Info("Test Info", i)
+
 		logger.Infof("Test Infof %s %d", "1231231", i)
+
 		logger.InfoWithRequestInfo(&RequestInfo{
 			ReqID:      "reqID",
 			Status:     200,
@@ -41,7 +47,8 @@ func TestRotateLogger(t *testing.T) {
 			URI:        "https://test.com",
 			UserID:     "UserID",
 			RefErrorID: "RefErrorID",
-		}, "1231231", i)
+		}, "Test InfoWithRequestInfo", i)
+
 		logger.ErrorWithRequestInfo(&RequestInfo{
 			ReqID:      "reqID",
 			Status:     200,
@@ -49,7 +56,8 @@ func TestRotateLogger(t *testing.T) {
 			URI:        "https://test.com",
 			UserID:     "UserID",
 			RefErrorID: "RefErrorID",
-		}, payload, errData)
+		}, "Test ErrorWithRequestInfo", payload, errData)
+
 		logger.ErrorJSONWithRequestInfo(&RequestInfo{
 			ReqID:      "reqID",
 			Status:     200,
@@ -57,7 +65,8 @@ func TestRotateLogger(t *testing.T) {
 			URI:        "https://test.com",
 			UserID:     "UserID",
 			RefErrorID: "RefErrorID",
-		}, payload, errData)
+		}, "Test ErrorWithRequestInfo", payload, errData)
+
 		time.Sleep(time.Second)
 	}
 
