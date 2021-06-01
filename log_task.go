@@ -23,20 +23,16 @@ type logTask struct {
 	caller      string
 	valueType   valueType
 	requestInfo *RequestInfo
-}
-
-// RequestInfo req
-type RequestInfo struct {
-	ReqID      string
-	Status     int
-	Method     string
-	URI        string
-	UserID     string
-	RefErrorID string
+	tag         string
 }
 
 func (task *logTask) withRequestInfo(requestInfo *RequestInfo) *logTask {
 	task.requestInfo = requestInfo
+	return task
+}
+
+func (task *logTask) withTag(tag string) *logTask {
+	task.tag = tag
 	return task
 }
 

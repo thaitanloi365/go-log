@@ -14,7 +14,7 @@ type SlackNotifier struct {
 }
 
 func redirectPolicyFunc(req gorequest.Request, via []gorequest.Request) error {
-	return fmt.Errorf("Incorrect token (redirection)")
+	return fmt.Errorf("incorrect token (redirection)")
 }
 
 // NewSlackNotifier slack notifier

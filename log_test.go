@@ -31,32 +31,44 @@ func TestRotateLogger(t *testing.T) {
 		"user_id":   1,
 		"user_name": "Loi",
 	}
-	for i := 0; i < 10; i++ {
-		logger.Debug("Test Debug", i)
+	for i := 0; i < 1; i++ {
+		// logger.Debug("Test Debug", i)
 
-		logger.Debugf("Test Debugf %d", i)
+		// logger.Debugf("Test Debugf %d", i)
 
-		logger.Info("Test Info", i)
+		// logger.DebugWithTag("This is a tag", "Test Debug", i)
 
-		logger.Infof("Test Infof %s %d", "1231231", i)
+		// logger.DebugfWithTag("This is a tag", "Test Debugf %d", i)
 
-		logger.InfoWithRequestInfo(&RequestInfo{
-			ReqID:      "reqID",
-			Status:     200,
-			Method:     "GET",
-			URI:        "https://test.com",
-			UserID:     "UserID",
-			RefErrorID: "RefErrorID",
-		}, "Test InfoWithRequestInfo", i)
+		// logger.Info("Test Info", i)
 
-		logger.ErrorWithRequestInfo(&RequestInfo{
-			ReqID:      "reqID",
-			Status:     200,
-			Method:     "GET",
-			URI:        "https://test.com",
-			UserID:     "UserID",
-			RefErrorID: "RefErrorID",
-		}, "Test ErrorWithRequestInfo", payload, errData)
+		// logger.Infof("Test Infof %s %d", "1231231", i)
+
+		// logger.DebugWithTag("This is a tag", "Test Debug", i)
+
+		// logger.DebugfWithTag("This is a tag", "Test Debugf %d", i)
+
+		// logger.InfoWithTag("This is a tag", "Test Info", i)
+
+		// logger.InfofWithTag("This is a tag", "Test Infof %s %d", "1231231", i)
+
+		// logger.InfoWithRequestInfo(&RequestInfo{
+		// 	ReqID:      "reqID",
+		// 	Status:     200,
+		// 	Method:     "GET",
+		// 	URI:        "https://test.com",
+		// 	UserID:     "UserID",
+		// 	RefErrorID: "RefErrorID",
+		// }, "Test InfoWithRequestInfo", i)
+
+		// logger.ErrorWithRequestInfo(&RequestInfo{
+		// 	ReqID:      "reqID",
+		// 	Status:     200,
+		// 	Method:     "GET",
+		// 	URI:        "https://test.com",
+		// 	UserID:     "UserID",
+		// 	RefErrorID: "RefErrorID",
+		// }, "Test ErrorWithRequestInfo", payload, errData)
 
 		logger.ErrorJSONWithRequestInfo(&RequestInfo{
 			ReqID:      "reqID",
@@ -66,6 +78,36 @@ func TestRotateLogger(t *testing.T) {
 			UserID:     "UserID",
 			RefErrorID: "RefErrorID",
 		}, "Test ErrorWithRequestInfo", payload, errData)
+
+		logger.InfoWithRequestInfo(&RequestInfo{
+			ReqID:      "reqID",
+			Status:     200,
+			Method:     "GET",
+			URI:        "https://test.com",
+			UserID:     "UserID",
+			RefErrorID: "RefErrorID",
+			Tag:        "This is a tag",
+		}, "Test InfoWithRequestInfo", i)
+
+		// logger.ErrorWithRequestInfo(&RequestInfo{
+		// 	ReqID:      "reqID",
+		// 	Status:     200,
+		// 	Method:     "GET",
+		// 	URI:        "https://test.com",
+		// 	UserID:     "UserID",
+		// 	RefErrorID: "RefErrorID",
+		// 	Tag:        "This is a tag",
+		// }, "Test ErrorWithRequestInfo", payload, errData)
+
+		// logger.ErrorJSONWithRequestInfo(&RequestInfo{
+		// 	ReqID:      "reqID",
+		// 	Status:     200,
+		// 	Method:     "GET",
+		// 	URI:        "https://test.com",
+		// 	UserID:     "UserID",
+		// 	RefErrorID: "RefErrorID",
+		// 	Tag:        "This is a tag",
+		// }, "Test ErrorWithRequestInfo", payload, errData)
 
 		time.Sleep(time.Second)
 	}

@@ -51,7 +51,6 @@ type Logger struct {
 	colorful     bool
 	timeLocation *time.Location
 	dateFormat   string
-	prefix       string
 
 	writeFileExceptLevels []LogLevel
 
@@ -166,106 +165,6 @@ func (l *Logger) Printf(format string, values ...interface{}) {
 	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeCustom, format, values...)
 }
 
-// Debug debug
-func (l *Logger) Debug(values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, "", values...)
-}
-
-// Debugf debug with format
-func (l *Logger) Debugf(format string, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, format, values...)
-}
-
-// DebugJSON print pretty json
-func (l *Logger) DebugJSON(values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...)
-}
-
-// Info info
-func (l *Logger) Info(values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, "", values...)
-}
-
-// Infof info with format
-func (l *Logger) Infof(format string, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, format, values...)
-}
-
-// InfoJSON print pretty json
-func (l *Logger) InfoJSON(values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...)
-}
-
-// Warn warn
-func (l *Logger) Warn(values ...interface{}) {
-	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeInterface, "", values...)
-}
-
-// Warnf info with format
-func (l *Logger) Warnf(format string, values ...interface{}) {
-	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeInterface, format, values...)
-}
-
-// WarnJSON print pretty json
-func (l *Logger) WarnJSON(values ...interface{}) {
-	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeJSON, "", values...)
-}
-
-// Error error
-func (l *Logger) Error(values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, "", values...)
-}
-
-// Errorf error with format
-func (l *Logger) Errorf(format string, values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, format, values...)
-}
-
-// ErrorJSON print pretty json
-func (l *Logger) ErrorJSON(values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...)
-}
-
-// DebugWithRequestInfo debug with request info
-func (l *Logger) DebugWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
-}
-
-// ErrorWithRequestInfo debug with request info
-func (l *Logger) ErrorWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
-}
-
-// InfoWithRequestInfo debug with request info
-func (l *Logger) InfoWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
-}
-
-// WarnWithRequestInfo debug with request info
-func (l *Logger) WarnWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
-}
-
-// DebugJSONWithRequestInfo debug with request info
-func (l *Logger) DebugJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
-}
-
-// ErrorJSONWithRequestInfo debug with request info
-func (l *Logger) ErrorJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
-}
-
-// InfoJSONWithRequestInfo debug with request info
-func (l *Logger) InfoJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
-}
-
-// WarnJSONWithRequestInfo debug with request info
-func (l *Logger) WarnJSONWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
-	l.queue <- l.buildlog(Warn, l.fileWithLineNum(), valueTypeJSON, "", values...).withRequestInfo(reqInfo)
-}
-
 func (l *Logger) run() {
 	go l.cleanup()
 
@@ -302,6 +201,7 @@ func (l *Logger) run() {
 				var fullFormat = format
 
 				if data.requestInfo != nil {
+					data.tag = data.requestInfo.Tag
 					fullFormatColor = formatColor + data.formatRequestInfo() + "\n"
 					fullFormat = fullFormat + data.formatRequestInfo() + " "
 				}
@@ -318,6 +218,11 @@ func (l *Logger) run() {
 					}
 				}
 
+				if data.tag != "" {
+					extraPrettyFormat = fmt.Sprintf("[%s] ", data.tag) + extraPrettyFormat
+					extraFormat = fmt.Sprintf("[%s] ", data.tag) + extraFormat
+				}
+
 				fullFormatColor = fullFormatColor + extraPrettyFormat
 				fullFormat = fullFormat + extraFormat
 
@@ -325,7 +230,7 @@ func (l *Logger) run() {
 				case valueTypeCustom:
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, data.values...)...)
 
-					if l.isIgnoreWriteFile(data.logLevel) == false {
+					if !l.isIgnoreWriteFile(data.logLevel) {
 						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, data.values...)...)
 					}
 
@@ -353,7 +258,7 @@ func (l *Logger) run() {
 					}
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, prettyValues...)...)
 
-					if l.isIgnoreWriteFile(data.logLevel) == false {
+					if !l.isIgnoreWriteFile(data.logLevel) {
 						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, values...)...)
 					}
 
@@ -368,7 +273,7 @@ func (l *Logger) run() {
 				default:
 					l.writer.Printf(fullFormatColor, append([]interface{}{data.time, data.caller}, data.values...)...)
 
-					if l.isIgnoreWriteFile(data.logLevel) == false {
+					if !l.isIgnoreWriteFile(data.logLevel) {
 						l.fileWriter.Printf(fullFormat, append([]interface{}{data.time, data.caller}, data.values...)...)
 					}
 
@@ -382,7 +287,6 @@ func (l *Logger) run() {
 
 				}
 
-				break
 			}
 		}
 	}(l.context, l.queue)
