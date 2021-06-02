@@ -12,6 +12,18 @@ func (l *Logger) ErrorJSON(values ...interface{}) {
 	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...)
 }
 
+func (l *Logger) ErrorWithTag(tag string, values ...interface{}) {
+	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, "", values...).withTag(tag)
+}
+
+func (l *Logger) ErrorfWithTag(tag string, format string, values ...interface{}) {
+	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, format, values...).withTag(tag)
+}
+
+func (l *Logger) ErrorJSONWithTag(tag string, values ...interface{}) {
+	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeJSON, "", values...).withTag(tag)
+}
+
 func (l *Logger) ErrorWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
 	l.queue <- l.buildlog(Error, l.fileWithLineNum(), valueTypeInterface, "", values...).withRequestInfo(reqInfo)
 }
