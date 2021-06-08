@@ -12,16 +12,16 @@ func (l *Logger) InfoJSON(values ...interface{}) {
 	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...)
 }
 
-func (l *Logger) InfoWithTag(tag string, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, "", values...).withTag(tag)
+func (l *Logger) InfoWithOption(option *Option, values ...interface{}) {
+	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, "", values...).withOption(option)
 }
 
-func (l *Logger) InfofWithTag(tag string, format string, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, format, values...).withTag(tag)
+func (l *Logger) InfofWithOption(option *Option, format string, values ...interface{}) {
+	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeInterface, format, values...).withOption(option)
 }
 
-func (l *Logger) InfoJSONWithTag(tag string, values ...interface{}) {
-	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...).withTag(tag)
+func (l *Logger) InfoJSONWithOption(option *Option, values ...interface{}) {
+	l.queue <- l.buildlog(Info, l.fileWithLineNum(), valueTypeJSON, "", values...).withOption(option)
 }
 
 func (l *Logger) InfoWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {

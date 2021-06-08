@@ -23,7 +23,7 @@ type logTask struct {
 	caller      string
 	valueType   valueType
 	requestInfo *RequestInfo
-	tag         string
+	option      *Option
 }
 
 func (task *logTask) withRequestInfo(requestInfo *RequestInfo) *logTask {
@@ -31,8 +31,8 @@ func (task *logTask) withRequestInfo(requestInfo *RequestInfo) *logTask {
 	return task
 }
 
-func (task *logTask) withTag(tag string) *logTask {
-	task.tag = tag
+func (task *logTask) withOption(option *Option) *logTask {
+	task.option = option
 	return task
 }
 
@@ -56,4 +56,11 @@ func (task *logTask) formatRequestInfo() string {
 	}
 
 	return fmt.Sprintf("%s %d %s %s", info.ReqID, info.Status, info.Method, info.URI)
+}
+
+func (task *logTask) formatOption() string {
+	if task.option == nil {
+		return ""
+	}
+	return task.option.Format()
 }

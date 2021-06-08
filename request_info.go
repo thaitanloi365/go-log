@@ -10,10 +10,11 @@ type RequestInfo struct {
 	UserID       string
 	RefErrorID   string
 	ResponseTime time.Time
-	Tag          string
+
+	option *Option
 }
 
-func (r *RequestInfo) WithTag(tag string) *RequestInfo {
-	r.Tag = tag
+func (r *RequestInfo) WithOption(option *Option) *RequestInfo {
+	r.option = option
 	return r
 }

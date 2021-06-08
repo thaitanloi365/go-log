@@ -12,16 +12,16 @@ func (l *Logger) DebugJSON(values ...interface{}) {
 	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...)
 }
 
-func (l *Logger) DebugWithTag(tag string, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, "", values...).withTag(tag)
+func (l *Logger) DebugWithOption(option *Option, values ...interface{}) {
+	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, "", values...).withOption(option)
 }
 
-func (l *Logger) DebugfWithTag(tag string, format string, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, format, values...).withTag(tag)
+func (l *Logger) DebugfWithOption(option *Option, format string, values ...interface{}) {
+	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeInterface, format, values...).withOption(option)
 }
 
-func (l *Logger) DebugJSONWithTag(tag string, values ...interface{}) {
-	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...).withTag(tag)
+func (l *Logger) DebugJSONWithOption(option *Option, values ...interface{}) {
+	l.queue <- l.buildlog(Debug, l.fileWithLineNum(), valueTypeJSON, "", values...).withOption(option)
 }
 
 func (l *Logger) DebugWithRequestInfo(reqInfo *RequestInfo, values ...interface{}) {
